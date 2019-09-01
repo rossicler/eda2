@@ -5,44 +5,89 @@
 #define MAX 3000
 #define STRINGLEN 26
 
-void sort(char v[MAX][STRINGLEN], int l, int r);
-void exch(int x, char v[MAX][STRINGLEN], int r);
+typedef struct city {
+    char name[STRINGLEN];
+    struct city *next;
+} City;
+
+City *lastCity;
+
+City *sort(City *l);
+void exch(City *l);
+City *newCity(City *l, char name[STRINGLEN]);
+void freeList(City *l);
+void printList(City *l);
 
 int main () {
+    City *cities = NULL;
     int vLength = 0;
-    char v[MAX][STRINGLEN];
-    while(scanf("%s", v[vLength]) == 1) {
+    char tempName[STRINGLEN];
+    while(scanf("%s", tempName) == 1) {
+        cities = newCity(cities, tempName);
         vLength++;
     }
 
-    sort(v, 0, vLength);
-
-    for(int i=0; i<vLength; i++) {
-        printf("%s\n", v[i]);
-    }
+    cities = sort(cities);
+    printList(cities);
+    freeList(cities);
 
     return 0;
 }
 
-void sort(char v[MAX][STRINGLEN], int l, int r) {
-    int len;
-    for(int i=l+1; i<r; i++) {
-        for(int j=i; j<r; j++) {
-            len = strlen(v[j-1]);
-            if(tolower(v[j-1][len-1]) == tolower(v[j][0])) {
-                exch(j, v, r);
-            } else {
-                break;
-            }
-        }
+City *newCity(City *l, char name[STRINGLEN]) {
+    City *new = (City *) malloc(sizeof(City));
+    if(new == NULL) {
+        printf("Error trying to allocate memory!");
+        exit(-1);
+    }
+    new->next = NULL;
+    strcpy(new->name, name);
+
+    if (l == NULL) {
+        l = new;
+    } else if (l->next == NULL) {
+        l->next = new;
+    } else {
+        City *temp = l->next;
+        lastCity->next = new;
+    }
+    lastCity = new;
+    return l;
+}
+
+void freeList(City *l) {
+    City *temp;
+    for(temp = l; temp != NULL; l = temp) {
+        temp = temp->next;
+        free(l);
     }
 }
 
-void exch(int x, char v[MAX][STRINGLEN], int r) {
-    char temp[STRINGLEN];
-    for(int i=x+1; i<r; i++) {
-        strcpy(temp, v[i-1]);
-        strcpy(v[i-1], v[i]);
-        strcpy(v[i], temp);
+void printList(City *l) {
+    City *temp;
+    for(temp = l; temp != NULL; temp = temp->next) {
+        printf("%s\n", temp->name);
     }
+}
+
+City *sort(City *l) {
+    int len;
+    City *temp1;
+    for(temp1 = l; temp1->next != NULL; temp1 = temp1->next) {
+        len = strlen(temp1->name);
+        if(tolower(temp1->name[len-1]) == tolower(temp1->next->name[0])) {
+            exch(temp1);
+        }
+    }
+    return l;
+}
+
+void exch(City *l) {
+    City *end = lastCity, *previousNode, *actualNode;
+    previousNode = l;
+    actualNode = l->next;
+    previousNode->next = actualNode->next;
+    end->next = actualNode;
+    actualNode->next = NULL;
+    lastCity = actualNode;
 }
