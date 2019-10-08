@@ -1,43 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 250000
 
 typedef struct item {
-    long value;
-    long previousValue, nextValue;
+    unsigned int cod;
+    int value;
 } Item;
 
 void quickSort(Item v[], int l, int r);
 int separa(Item v[], int l, int r);
 void exch(Item *a, Item *b);
-long getNextValue(Item v[], int l, int r, long x);
+Item *selectFeatures(Item *selected, Item item, int numSelected);
 
 int main () {
-    Item itens[MAX];
-    long ptr1, ptr2;
-    int count = 0;
+    Item *itens = (Item *) malloc(sizeof(Item));
+    int count = 0, numSelect;
 
-    scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
-    ptr1 = itens[count].value;
-    count++;
-    scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
-    ptr2 = itens[count].value;
-    count++;
-    while(scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue) == 3) {
+    scanf("%d", &numSelect);
+    while(scanf("%u %d", &itens[count]->cod, &itens[count]->value) == 2) {
         count++;
+        itens = (Item *) realloc(itens, (count+1) * sizeof(Item));
     }
 
-    quickSort(itens, 0, count-1);
-
-    long currentValue = getNextValue(itens, 0, count-1, ptr1);
-    while(currentValue != 0) {
-        if(currentValue == ptr2) {
-            printf("sana\n");
-            return 0;
-        }
-        currentValue = getNextValue(itens, 0, count-1, currentValue);
-    }
-    printf("insana\n");
     return 0;
 }
 
@@ -87,4 +70,8 @@ long getNextValue(Item v[], int l, int r, long x) {
     } else {
         return getNextValue(v, l, middleIndex-1, x);
     }
+}
+
+Item *selectFeatures(Item *selected, Item item) {
+
 }
