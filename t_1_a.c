@@ -1,72 +1,91 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX 250000
 
 typedef struct item {
-    unsigned long value;
-    unsigned long previousValue, nextValue;
-    struct item *previous, *next;
+    long value;
+    long previousValue, nextValue;
 } Item;
 
-Item *newItem(Item *itens, Item *temp);
-unsigned long getNextValue(Item *itens, unsigned long value);
+void quickSort(Item v[], int l, int r);
+int separa(Item v[], int l, int r);
+void exch(Item *a, Item *b);
+long getNextValue(Item v[], int l, int r, long x);
 
 int main () {
-    Item *itens = NULL;
-    Item *temp = NULL;
-    temp = (Item *) malloc(sizeof(Item));
-    unsigned long ptr1, ptr2;
+    Item itens[MAX];
+    long ptr1, ptr2;
+    int count = 0;
 
-    scanf("%x %x %x", &temp->value, &temp->previousValue, &temp->nextValue);
-    ptr1 = temp->value;
-    itens = newItem(itens, temp);
-    scanf("%x %x %x", &temp->value, &temp->previousValue, &temp->nextValue);
-    ptr2 = temp->value;
-    itens = newItem(itens, temp);
-    while(scanf("%x %x %x", &temp->value, &temp->previousValue, &temp->nextValue) == 3) {
-        itens = newItem(itens, temp);
+    scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
+    ptr1 = itens[count].value;
+    count++;
+    scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
+    ptr2 = itens[count].value;
+    count++;
+    while(scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue) == 3) {
+        count++;
     }
 
-    unsigned long currentValue = getNextValue(itens, ptr1);
+    quickSort(itens, 0, count-1);
+
+    long currentValue = getNextValue(itens, 0, count-1, ptr1);
     while(currentValue != 0) {
         if(currentValue == ptr2) {
             printf("sana\n");
             return 0;
         }
-        currentValue = getNextValue(itens, currentValue);
+        currentValue = getNextValue(itens, 0, count-1, currentValue);
     }
-    prinf("insana\n");
+    printf("insana\n");
     return 0;
 }
 
-Item *newItem(Item *itens, Item *temp) {
-    Item *new;
-    new = (Item *) malloc(sizeof(Item));
-    if(new == NULL) {
-        printf("Erro na alocação!\n");
-        exit(-1);
-    }
-
-    new->value = temp->value;
-    new->nextValue = temp->nextValue;
-    new->previousValue = temp->previousValue;
-
-    if(itens == NULL) {
-        new->next = NULL;
-        new->previous = NULL;
-        return new;
-    } else {
-        new->next = itens;
-        itens->previous = new;
-        return new;
+void quickSort(Item v[], int l, int r) {
+    if(l<r) {
+        int j = separa(v, l, r);
+        quickSort(v, l, j-1);
+        quickSort(v, j+1, r);
     }
 }
 
-unsigned long getNextValue(Item *itens, unsigned long value) {
-    Item *temp;
-    for(temp = itens; temp->next != NULL; temp = temp->next) {
-        if(temp->value == value) {
-            return temp->nextValue;
+int separa(Item v[], int l, int r) {
+    long c = v[r].value;
+    int j = l;
+    for(int i=l; i<r; i++) {
+        if(v[i].value <= c) {
+            exch(&v[i], &v[j]);
+            j++;
         }
+    }
+    exch(&v[j], &v[r]);
+    return j;
+}
+
+void exch(Item *a, Item *b) {
+    Item temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+long getNextValue(Item v[], int l, int r, long x) {
+    int middleIndex;
+    if((r+l+1) % 2 == 0) {
+        middleIndex = (r+l+1)/2;
+    } else {
+        middleIndex = (r+l)/2;
+    }
+
+    if(x == v[middleIndex].value) {
+        return v[middleIndex].nextValue;
+    } else if(l>=r) {
+        return 0;
+    }
+    
+    if(x > v[middleIndex].value) {
+        return getNextValue(v, middleIndex+1, r, x);
+    } else {
+        return getNextValue(v, l, middleIndex-1, x);
     }
 }
