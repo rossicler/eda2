@@ -1,24 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX 10000000
 
 typedef struct item {
     unsigned int cod;
     int value;
 } Item;
 
+int value;
+
 void quickSort(Item v[], int l, int r);
 int separa(Item v[], int l, int r);
 void exch(Item *a, Item *b);
-Item *selectFeatures(Item *selected, Item item, int numSelected);
 
 int main () {
-    Item *itens = (Item *) malloc(sizeof(Item));
+    Item itens[MAX];
     int count = 0, numSelect;
-
+    printf("1\n");
     scanf("%d", &numSelect);
-    while(scanf("%u %d", &itens[count]->cod, &itens[count]->value) == 2) {
+    while(scanf("%u %d", &itens[count].cod, &itens[count].value) == 2) {
         count++;
-        itens = (Item *) realloc(itens, (count+1) * sizeof(Item));
+    }
+    printf("2\n");
+    value = 0;
+    quickSort(itens, 0, count-1);
+    printf("3\n");
+    value = 1;
+    quickSort(itens, 0, numSelect);
+    printf("4\n");
+    for(int i=0; i<numSelect; i++) {
+        printf("%u %d\n", itens[i].cod, itens[i].value);
     }
 
     return 0;
@@ -33,7 +44,19 @@ void quickSort(Item v[], int l, int r) {
 }
 
 int separa(Item v[], int l, int r) {
-    long c = v[r].value;
+    if (value == 1) {
+	unsigned int c = v[r].cod;
+	int j = l;
+	for(int i=l; j<r; i++){
+	    if(v[i].cod <= c) {
+	        exch(&v[i], &v[j]);
+		j++;
+	    }
+	}
+	exch(&v[j], &v[r]);
+	return j;
+    }
+    int c = v[r].value;
     int j = l;
     for(int i=l; i<r; i++) {
         if(v[i].value <= c) {
@@ -49,29 +72,4 @@ void exch(Item *a, Item *b) {
     Item temp = *a;
     *a = *b;
     *b = temp;
-}
-
-long getNextValue(Item v[], int l, int r, long x) {
-    int middleIndex;
-    if((r+l+1) % 2 == 0) {
-        middleIndex = (r+l+1)/2;
-    } else {
-        middleIndex = (r+l)/2;
-    }
-
-    if(x == v[middleIndex].value) {
-        return v[middleIndex].nextValue;
-    } else if(l>=r) {
-        return 0;
-    }
-    
-    if(x > v[middleIndex].value) {
-        return getNextValue(v, middleIndex+1, r, x);
-    } else {
-        return getNextValue(v, l, middleIndex-1, x);
-    }
-}
-
-Item *selectFeatures(Item *selected, Item item) {
-
 }
