@@ -7,6 +7,8 @@ typedef struct item {
     long previousValue, nextValue;
 } Item;
 
+void mergeSort(Item v[], int l, int r);
+void merge(Item v[], int l, int m, int r);
 void quickSort(Item v[], int l, int r);
 int separa(Item v[], int l, int r);
 void exch(Item *a, Item *b);
@@ -27,10 +29,10 @@ int main () {
         count++;
     }
 
-    quickSort(itens, 0, count-1);
+    mergeSort(itens, 0, count-1);
 
     long currentValue = getNextValue(itens, 0, count-1, ptr1);
-    while(currentValue != 0) {
+    while(currentValue != 0 && currentValue  != ptr1) {
         if(currentValue == ptr2) {
             printf("sana\n");
             return 0;
@@ -39,6 +41,59 @@ int main () {
     }
     printf("insana\n");
     return 0;
+}
+
+void mergeSort(Item v[], int l, int r) {
+    if(l < r) {
+        int m = l+(r-l)/2;
+
+        mergeSort(v, l, m);
+        mergeSort(v, m+1, r);
+
+        merge(v, l, m, r);
+    }
+}
+
+void merge(Item v[], int l, int m, int r) {
+    int i, j, k;
+    Item *lv, *rv;
+    int lvLength = m - l + 1;
+    int rvLength = r - m;
+
+    lv = (Item *) malloc(lvLength*sizeof(Item));
+    rv = (Item *) malloc(rvLength*sizeof(Item));
+
+    for(i = 0; i<lvLength; i++) lv[i] = v[l+i];
+    for(j = 0; j<rvLength; j++) rv[j] = v[m+1+j];
+
+    i=0;
+    j=0;
+    k=l;
+
+    while(i<lvLength && j<rvLength) {
+        if(lv[i].value <= rv[j].value) {
+            v[k] = lv[i];
+            i++;
+        } else {
+            v[k] = rv[j];
+            j++;
+        }
+        k++;
+    }
+
+    while(i<lvLength) {
+        v[k] = lv[i];
+        i++;
+        k++;
+    }
+
+    while(j<rvLength) {
+        v[k] = rv[j];
+        j++;
+        k++;
+    }
+    free(lv);
+    free(rv);
 }
 
 void quickSort(Item v[], int l, int r) {
