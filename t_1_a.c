@@ -3,6 +3,7 @@
 #define MAX 250000
 
 typedef struct item {
+    int visited;
     long value;
     long previousValue, nextValue;
 } Item;
@@ -12,7 +13,7 @@ void merge(Item v[], int l, int m, int r);
 void quickSort(Item v[], int l, int r);
 int separa(Item v[], int l, int r);
 void exch(Item *a, Item *b);
-long getNextValue(Item v[], int l, int r, long x);
+int getIndex(Item v[], int l, int r, long x);
 
 int main () {
     Item itens[MAX];
@@ -21,23 +22,31 @@ int main () {
 
     scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
     ptr1 = itens[count].value;
+    itens[count].visited = 0;
     count++;
     scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
     ptr2 = itens[count].value;
+    itens[count].visited = 0;
     count++;
     while(scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue) == 3) {
+        itens[count].visited = 0;
         count++;
     }
 
     mergeSort(itens, 0, count-1);
 
-    long currentValue = getNextValue(itens, 0, count-1, ptr1);
-    while(currentValue != 0 && currentValue  != ptr1) {
-        if(currentValue == ptr2) {
+    int currentIndex = getIndex(itens, 0, count-1, ptr1);
+    itens[currentIndex].visited = 1;
+    long previousValue;
+    while(itens[currentIndex].nextValue != 0) {
+        if(itens[currentIndex].nextValue == ptr2) {
             printf("sana\n");
             return 0;
         }
-        currentValue = getNextValue(itens, 0, count-1, currentValue);
+        previousValue = itens[currentIndex].value;
+        currentIndex = getIndex(itens, 0, count-1, itens[currentIndex].nextValue);
+        if(itens[currentIndex].visited == 1 || previousValue != itens[currentIndex].previousValue) break;
+        itens[currentIndex].visited = 1;
     }
     printf("insana\n");
     return 0;
@@ -123,7 +132,7 @@ void exch(Item *a, Item *b) {
     *b = temp;
 }
 
-long getNextValue(Item v[], int l, int r, long x) {
+int getIndex(Item v[], int l, int r, long x) {
     int middleIndex;
     if((r+l+1) % 2 == 0) {
         middleIndex = (r+l+1)/2;
@@ -132,14 +141,14 @@ long getNextValue(Item v[], int l, int r, long x) {
     }
 
     if(x == v[middleIndex].value) {
-        return v[middleIndex].nextValue;
+        return middleIndex;
     } else if(l>=r) {
-        return 0;
+        return -1;
     }
     
     if(x > v[middleIndex].value) {
-        return getNextValue(v, middleIndex+1, r, x);
+        return getIndex(v, middleIndex+1, r, x);
     } else {
-        return getNextValue(v, l, middleIndex-1, x);
+        return getIndex(v, l, middleIndex-1, x);
     }
 }
