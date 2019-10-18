@@ -3,7 +3,6 @@
 #define MAX 250000
 
 typedef struct item {
-    int visited;
     long value;
     long previousValue, nextValue;
 } Item;
@@ -20,14 +19,11 @@ int main () {
 
     scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
     ptr1 = itens[count];
-    itens[count].visited = 0;
     count++;
     scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
     ptr2 = itens[count];
-    itens[count].visited = 0;
     count++;
     while(scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue) == 3) {
-        itens[count].visited = 0;
         count++;
     }
 
@@ -41,18 +37,14 @@ int main () {
 
     int currentIndex = findBegin(itens, 0, count-1, ptr1.previousValue);
     while(itens[currentIndex].value != 0 && currentIndex != -1) {
-        if(itens[currentIndex].visited == 1) break;
         printf("%x %x %x\n", itens[currentIndex].value, itens[currentIndex].previousValue, itens[currentIndex].nextValue);
-        itens[currentIndex].visited = 1;
         currentIndex = getIndex(itens, 0, count-1, itens[currentIndex].nextValue);
     }
     printf("\n");
 
     currentIndex = getIndex(itens, 0, count-1, ptr1.value);
     while(itens[currentIndex].value != ptr2.nextValue) {
-        if(itens[currentIndex].visited == 1) break;
         printf("%x\n", itens[currentIndex].value);
-        itens[currentIndex].visited = 1;
         currentIndex = getIndex(itens, 0, count-1, itens[currentIndex].nextValue);
     }
 

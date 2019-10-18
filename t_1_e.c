@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 10000000
 
 typedef struct item {
     unsigned int cod;
@@ -9,67 +8,101 @@ typedef struct item {
 
 int value;
 
-void quickSort(Item v[], int l, int r);
-int separa(Item v[], int l, int r);
-void exch(Item *a, Item *b);
+void mergeSort(Item v[], int l, int r);
+void merge(Item v[], int l, int m, int r);
+Item *select(Item v[], int l, int r, int n);
+void exch(Item *x, Item *y);
 
 int main () {
-    Item itens[MAX];
+    Item *itens = (Item *) malloc(sizeof(Item));
     int count = 0, numSelect;
     printf("1\n");
     scanf("%d", &numSelect);
-    while(scanf("%u %d", &itens[count].cod, &itens[count].value) == 2) {
+    while(scanf("%u %d", &itens[count]->cod, &itens[count]->value) == 2) {
         count++;
+        itens = (Item *) realloc(itens, (count+1)*sizeof(Item));
     }
     printf("2\n");
     value = 0;
-    quickSort(itens, 0, count-1);
+    mergeSort(itens, 0, count-1);
     printf("3\n");
     value = 1;
-    quickSort(itens, 0, numSelect);
+    mergeSort(itens, 0, numSelect);
     printf("4\n");
     for(int i=0; i<numSelect; i++) {
-        printf("%u %d\n", itens[i].cod, itens[i].value);
+        printf("%u %d\n", itens[i]->cod, itens[i]->value);
     }
 
     return 0;
 }
 
-void quickSort(Item v[], int l, int r) {
-    if(l<r) {
-        int j = separa(v, l, r);
-        quickSort(v, l, j-1);
-        quickSort(v, j+1, r);
+Item *select(Item v[], int l, int r, int n) {
+    Item *selected = (Item*) malloc(n*sizeof(Item));
+    for (int i=0; i<n; i++) {
+        selected->cod = 0;
+        selected->value = 0;
+    }
+
+    for(int i=l; i<r; i++) {
+        
     }
 }
 
-int separa(Item v[], int l, int r) {
-    if (value == 1) {
-	unsigned int c = v[r].cod;
-	int j = l;
-	for(int i=l; j<r; i++){
-	    if(v[i].cod <= c) {
-	        exch(&v[i], &v[j]);
-		j++;
-	    }
-	}
-	exch(&v[j], &v[r]);
-	return j;
+void exch(Item *x, Item *y) {
+    Item temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void mergeSort(Item v[], int l, int r) {
+    if(l < r) {
+        int m = l+(r-l)/2;
+
+        mergeSort(v, l, m);
+        mergeSort(v, m+1, r);
+
+        merge(v, l, m, r);
     }
-    int c = v[r].value;
-    int j = l;
-    for(int i=l; i<r; i++) {
-        if(v[i].value <= c) {
-            exch(&v[i], &v[j]);
+}
+
+void merge(Item v[], int l, int m, int r) {
+    int i, j, k;
+    Item *lv, *rv;
+    int lvLength = m - l + 1;
+    int rvLength = r - m;
+
+    lv = (Item *) malloc(lvLength*sizeof(Item));
+    rv = (Item *) malloc(rvLength*sizeof(Item));
+
+    for(i = 0; i<lvLength; i++) lv[i] = v[l+i];
+    for(j = 0; j<rvLength; j++) rv[j] = v[m+1+j];
+
+    i=0;
+    j=0;
+    k=l;
+
+    while(i<lvLength && j<rvLength) {
+        if(lv[i].cod <= rv[j].cod) {
+            v[k] = lv[i];
+            i++;
+        } else {
+            v[k] = rv[j];
             j++;
         }
+        k++;
     }
-    exch(&v[j], &v[r]);
-    return j;
-}
 
-void exch(Item *a, Item *b) {
-    Item temp = *a;
-    *a = *b;
-    *b = temp;
+    while(i<lvLength) {
+        v[k] = lv[i];
+        i++;
+        k++;
+    }
+
+    while(j<rvLength) {
+        v[k] = rv[j];
+        j++;
+        k++;
+    }
+    free(lv);
+    free(rv);
 }
