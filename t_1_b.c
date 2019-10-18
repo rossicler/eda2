@@ -3,27 +3,27 @@
 #define MAX 250000
 
 typedef struct item {
-    long value;
-    long previousValue, nextValue;
+    unsigned long value;
+    unsigned long previousValue, nextValue;
 } Item;
 
 void mergeSort(Item v[], int l, int r);
 void merge(Item v[], int l, int m, int r);
-int getIndex(Item v[], int l, int r, long x);
-int findBegin(Item v[], int l, int r, long x);
+int getIndex(Item v[], int l, int r, unsigned long x);
+int findBegin(Item v[], int l, int r, unsigned long x);
 
 int main () {
     Item itens[MAX];
     Item ptr1, ptr2;
     int count = 0;
 
-    scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
+    scanf("%lx %lx %lx", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
     ptr1 = itens[count];
     count++;
-    scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
+    scanf("%lx %lx %lx", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue);
     ptr2 = itens[count];
     count++;
-    while(scanf("%x %x %x", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue) == 3) {
+    while(scanf("%lx %lx %lx", &itens[count].value, &itens[count].previousValue, &itens[count].nextValue) == 3) {
         count++;
     }
 
@@ -37,14 +37,14 @@ int main () {
 
     int currentIndex = findBegin(itens, 0, count-1, ptr1.previousValue);
     while(itens[currentIndex].value != 0 && currentIndex != -1) {
-        printf("%x %x %x\n", itens[currentIndex].value, itens[currentIndex].previousValue, itens[currentIndex].nextValue);
+        printf("%lx %lx %lx\n", itens[currentIndex].value, itens[currentIndex].previousValue, itens[currentIndex].nextValue);
         currentIndex = getIndex(itens, 0, count-1, itens[currentIndex].nextValue);
     }
     printf("\n");
 
     currentIndex = getIndex(itens, 0, count-1, ptr1.value);
     while(itens[currentIndex].value != ptr2.nextValue) {
-        printf("%x\n", itens[currentIndex].value);
+        printf("%lx\n", itens[currentIndex].value);
         currentIndex = getIndex(itens, 0, count-1, itens[currentIndex].nextValue);
     }
 
@@ -104,7 +104,7 @@ void merge(Item v[], int l, int m, int r) {
     free(rv);
 }
 
-int getIndex(Item v[], int l, int r, long x) {
+int getIndex(Item v[], int l, int r, unsigned long x) {
     int middleIndex;
     if((r+l+1) % 2 == 0) {
         middleIndex = (r+l+1)/2;
@@ -125,7 +125,7 @@ int getIndex(Item v[], int l, int r, long x) {
     }
 }
 
-int findBegin(Item v[], int l, int r, long x) {
+int findBegin(Item v[], int l, int r, unsigned long x) {
     int previousIndex = getIndex(v, l, r, x);
     int index = getIndex(v, l, r, v[previousIndex].previousValue);
     while(v[index].value != 0 && index != -1) {
