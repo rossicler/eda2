@@ -8,10 +8,12 @@ typedef struct item {
 } Item;
 
 void insertEmail(Item *emails, int *n, char email[]);
-int sameEmail(char emailX[], char emailY[]);
+char *getEmail(char email[]);
+void printList(Item *items, int n);
 
 int main () {
     Item *emails = (Item *) malloc(sizeof(Item));
+    char *contacts[MAX] = (char*) malloc(sizeof(char));
     char email[MAX];
     int n;
     scanf("%d", &n);
@@ -19,6 +21,7 @@ int main () {
     for(int i=0; i<n; i++) {
         scanf(" %s", email);
         insertEmail(emails, &count, email);
+        printList(emails, count);
     }
     printf("%d\n", count);
 
@@ -26,60 +29,53 @@ int main () {
 }
 
 void insertEmail(Item *emails, int *n, char email[]) {
+    char newEmail[MAX];
+    strcpy(newEmail, getEmail(email));
     int shouldInsert = 1;
     for (int i=0; i<(*n); i++) {
-        if(sameEmail(emails[i].email, email) == 1) {
+        /*puts(emails[i].email);
+        puts(newEmail);
+        printf("%d\n", strcmp(emails[i].email, newEmail)); */
+        if(strcmp(emails[i].email, newEmail) == 0) {
             return;
         }
     }
-    printf("----------------------------\n");
     (*n)++;
     emails = (Item *) realloc(emails, (*n)*sizeof(Item));
-    strcpy(emails[(*n)-1].email, email);
+    strcpy(emails[(*n)-1].email, newEmail);
+    printf("%d\n*****%s******\n", (*n), emails[(*n)-1],email);
 }
 
-int sameEmail(char emailX[], char emailY[]) {
-    int isSame = 1, xPosition = 0, yPosition = 0, isDomain = 0;
-    puts(emailX);
-    puts(emailY);
-    printf("----------------------------\n");
-    char x, y;
-    while(1) {
-        x = emailX[xPosition];
-        y = emailY[yPosition];
-        if (x == '\0' && y == '\0') {
-            break;
-        }
-
-        if(x == '.' && !isDomain) {
+char *getEmail(char email[]) {
+    int xPosition = 0, yPosition = 0, isDomain = 0;
+    char *newEmail = (char *) malloc(sizeof(char));
+    while(email[xPosition] != '\0') {
+        if(email[xPosition] == '.' && isDomain == 0) {
             xPosition++;
             continue;
         }
-        if(x == '+' && !isDomain) {
-            while(emailX[xPosition] != '@') {
+        if(email[xPosition] == '+' && isDomain == 0) {
+            while(email[xPosition] != '@') {
                 xPosition++;
             }
         }
-        if(y == '.' && !isDomain) {
-            yPosition++;
-            continue;
-        }
-        if(y == '+' && !isDomain) {
-            while(emailY[yPosition] != '@') {
-                yPosition++;
-            }
-        }
 
-        if(x == '@' && y == '@') {
+        if(email[xPosition] == '@') {
             isDomain = 1;
         }
 
-        if (x != y) {
-            isSame = 0;
-            break;
-        }
+        newEmail[yPosition] = email[xPosition];
         xPosition++;
         yPosition++;
+        newEmail = (char *) realloc(newEmail, (yPosition+1)*sizeof(char));
     }
-    return isSame;
+    newEmail = (char *) realloc(newEmail, (yPosition+2)*sizeof(char));
+    newEmail[yPosition+1] = '\0';
+    return newEmail;
+}
+
+void printList(Item *items, int n) {
+    for(int i=0; i<n; i++) {
+        puts(items[i].email);
+    }
 }
