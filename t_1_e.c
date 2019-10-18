@@ -36,6 +36,7 @@ int main () {
     return 0;
 }
 
+// Encontra e coloca (kind of a selection sort)
 Item *select(Item v[], int l, int r, int n) {
     Item *selected = (Item*) malloc(n*sizeof(Item));
     for (int i=0; i<n; i++) {
