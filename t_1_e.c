@@ -8,44 +8,41 @@ typedef struct item {
 
 int value;
 
-void mergeSort(Item v[], int l, int r);
-void merge(Item v[], int l, int m, int r);
-Item *select(Item v[], int l, int r, int n);
+void mergeSort(Item *v, int l, int r);
+void merge(Item *v, int l, int m, int r);
+void getNSmallest(Item *v, int l, int r, int n);
 void exch(Item *x, Item *y);
 
 int main () {
     Item *itens = (Item *) malloc(sizeof(Item));
     int count = 0, numSelect;
-    printf("1\n");
     scanf("%d", &numSelect);
-    while(scanf("%u %d", &itens[count]->cod, &itens[count]->value) == 2) {
+    while(scanf("%u %d", &itens[count].cod, &itens[count].value) == 2) {
         count++;
         itens = (Item *) realloc(itens, (count+1)*sizeof(Item));
     }
-    printf("2\n");
-    value = 0;
-    mergeSort(itens, 0, count-1);
-    printf("3\n");
-    value = 1;
-    mergeSort(itens, 0, numSelect);
-    printf("4\n");
+    
+    getNSmallest(itens, 0, count, numSelect);
+    mergeSort(itens, 0, numSelect-1);
     for(int i=0; i<numSelect; i++) {
-        printf("%u %d\n", itens[i]->cod, itens[i]->value);
+        printf("%u %d\n", itens[i].cod, itens[i].value);
     }
 
     return 0;
 }
 
-// Encontra e coloca (kind of a selection sort)
-Item *select(Item v[], int l, int r, int n) {
-    Item *selected = (Item*) malloc(n*sizeof(Item));
-    for (int i=0; i<n; i++) {
-        selected->cod = 0;
-        selected->value = 0;
-    }
-
-    for(int i=l; i<r; i++) {
-        
+void getNSmallest(Item *v, int l, int r, int n) {
+    int i, j, k;
+    for(i=l; i<n; i++) {
+        k = i;
+        for(j=i; j<r; j++) {
+            if (v[j].value < v[k].value) {
+                k = j;
+            } else if (v[j].value == v[k].value && v[j].cod < v[k].cod) {
+                k = j;
+            }
+        }
+        exch(&v[i], &v[k]);
     }
 }
 
@@ -55,7 +52,7 @@ void exch(Item *x, Item *y) {
     *y = temp;
 }
 
-void mergeSort(Item v[], int l, int r) {
+void mergeSort(Item *v, int l, int r) {
     if(l < r) {
         int m = l+(r-l)/2;
 
@@ -66,7 +63,7 @@ void mergeSort(Item v[], int l, int r) {
     }
 }
 
-void merge(Item v[], int l, int m, int r) {
+void merge(Item *v, int l, int m, int r) {
     int i, j, k;
     Item *lv, *rv;
     int lvLength = m - l + 1;
