@@ -1,49 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX 100
+#define MAX 1000
+#define MAXLEN 101
 
-typedef struct item {
-    char email[MAX];
-} Item;
-
-void insertEmail(Item *emails, int *n, char email[]);
+void insertEmail(char contacts[MAX][MAXLEN], int *n, char email[]);
 char *getEmail(char email[]);
-void printList(Item *items, int n);
 
 int main () {
-    Item *emails = (Item *) malloc(sizeof(Item));
-    char *contacts[MAX] = (char*) malloc(sizeof(char));
-    char email[MAX];
+    char contacts[MAX][MAXLEN];
+    char email[MAXLEN];
     int n;
     scanf("%d", &n);
     int count = 0;
     for(int i=0; i<n; i++) {
         scanf(" %s", email);
-        insertEmail(emails, &count, email);
-        printList(emails, count);
+        insertEmail(contacts, &count, email);
     }
     printf("%d\n", count);
 
     return 0;
 }
 
-void insertEmail(Item *emails, int *n, char email[]) {
-    char newEmail[MAX];
+void insertEmail(char contacts[MAX][MAXLEN], int *n, char email[]) {
+    char newEmail[MAXLEN];
     strcpy(newEmail, getEmail(email));
     int shouldInsert = 1;
     for (int i=0; i<(*n); i++) {
-        /*puts(emails[i].email);
-        puts(newEmail);
-        printf("%d\n", strcmp(emails[i].email, newEmail)); */
-        if(strcmp(emails[i].email, newEmail) == 0) {
+        if(strcmp(contacts[i], newEmail) == 0) {
             return;
         }
     }
     (*n)++;
-    emails = (Item *) realloc(emails, (*n)*sizeof(Item));
-    strcpy(emails[(*n)-1].email, newEmail);
-    printf("%d\n*****%s******\n", (*n), emails[(*n)-1],email);
+    strcpy(contacts[(*n)-1], newEmail);
 }
 
 char *getEmail(char email[]) {
@@ -72,10 +61,4 @@ char *getEmail(char email[]) {
     newEmail = (char *) realloc(newEmail, (yPosition+2)*sizeof(char));
     newEmail[yPosition+1] = '\0';
     return newEmail;
-}
-
-void printList(Item *items, int n) {
-    for(int i=0; i<n; i++) {
-        puts(items[i].email);
-    }
 }
