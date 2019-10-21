@@ -51,6 +51,7 @@ char *getEmail(char email[]) {
 
         if(email[xPosition] == '@') {
             isDomain = 1;
+            break;
         }
 
         newEmail[yPosition] = email[xPosition];
@@ -58,7 +59,11 @@ char *getEmail(char email[]) {
         yPosition++;
         newEmail = (char *) realloc(newEmail, (yPosition+1)*sizeof(char));
     }
-    newEmail = (char *) realloc(newEmail, (yPosition+2)*sizeof(char));
-    newEmail[yPosition+1] = '\0';
+    int emailLen = strlen(email);
+    newEmail = (char *) realloc(newEmail, (yPosition + 1 + emailLen - xPosition)*sizeof(char));
+    for(int i=0; i<emailLen-xPosition; i++) {
+        newEmail[yPosition+i] = email[xPosition+i];
+    }
+    newEmail[yPosition+emailLen-xPosition] = '\0';
     return newEmail;
 }
