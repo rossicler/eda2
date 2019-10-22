@@ -12,6 +12,8 @@ void mergeSort(Item *v, int l, int r);
 void merge(Item *v, int l, int m, int r);
 void getNSmallest(Item *v, int l, int r, int n);
 void exch(Item *x, Item *y);
+int partition(Item *v, int l, int r);
+int quickSelect(Item *v, int l, int r, int k);
 
 int main () {
     Item *itens = (Item *) malloc(sizeof(Item));
@@ -23,26 +25,61 @@ int main () {
     }
     
     getNSmallest(itens, 0, count, numSelect);
-    mergeSort(itens, 0, numSelect-1);
-    for(int i=0; i<numSelect; i++) {
+    mergeSort(itens, 0, numSelect);
+    for(int i=1; i<numSelect+1; i++) {
         printf("%u %d\n", itens[i].cod, itens[i].value);
     }
 
     return 0;
 }
 
-void getNSmallest(Item *v, int l, int r, int n) {
-    int i, j, k;
-    for(i=l; i<n; i++) {
-        k = i;
-        for(j=i; j<r; j++) {
-            if (v[j].value < v[k].value) {
-                k = j;
-            } else if (v[j].value == v[k].value && v[j].cod < v[k].cod) {
-                k = j;
-            }
+int partition(Item *v, int l, int r) {
+    int middleIndex;
+    if((r+l+1) % 2 == 0) {
+        middleIndex = (r+l+1)/2;
+    } else {
+        middleIndex = (r+l)/2;
+    }
+
+	Item pivot = v[r];
+    /*if(v[l].value > v[middleIndex].value && v[l].value < v[r].value) {
+        pivot = v[l];
+    } else if(v[middleIndex].value > v[r].value && v[middleIndex].value < v[l].value) {
+        pivot = v[middleIndex];
+    } else {
+        pivot = v[r];
+    } */
+
+	int i = l, x;
+
+	for(x=l; x<r; x++) {
+		if(v[x].value < pivot.value) {
+			exch(&v[i], &v[x]);
+			i++;
+		}
+	}
+
+    exch(&v[i], &v[r]);
+    return i;
+}
+
+int quickSelect(Item *v, int l, int r, int k) {
+    if(k>0 && k < r-l+1) {
+        int p = partition(v, l, r);
+        if(p - l == k-1) {
+            return p;
+        } else if(k-1 < p - l) {
+            return quickSelect(v, l, p-1, k);
+        } else {
+            return quickSelect(v, p+1, r, k-p+l-1);
         }
-        exch(&v[i], &v[k]);
+    }
+}
+
+void getNSmallest(Item *v, int l, int r, int n) {
+    int i;
+    for(i=l; i<n; i++) {
+        quickSelect(v, i, r, 1);
     }
 }
 
