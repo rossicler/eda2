@@ -24,9 +24,9 @@ int main () {
         itens = (Item *) realloc(itens, (count+1)*sizeof(Item));
     }
     
-    getNSmallest(itens, 0, count, numSelect);
-    mergeSort(itens, 0, numSelect);
-    for(int i=1; i<numSelect+1; i++) {
+    getNSmallest(itens, 0, count-1, numSelect);
+    mergeSort(itens, 0, numSelect-1);
+    for(int i=0; i<numSelect; i++) {
         printf("%u %d\n", itens[i].cod, itens[i].value);
     }
 
@@ -34,21 +34,27 @@ int main () {
 }
 
 int partition(Item *v, int l, int r) {
-    int middleIndex;
+    int m;
     if((r+l+1) % 2 == 0) {
-        middleIndex = (r+l+1)/2;
+        m = (r+l+1)/2;
     } else {
-        middleIndex = (r+l)/2;
+        m = (r+l)/2;
     }
 
-	Item pivot = v[r];
-    /*if(v[l].value > v[middleIndex].value && v[l].value < v[r].value) {
-        pivot = v[l];
-    } else if(v[middleIndex].value > v[r].value && v[middleIndex].value < v[l].value) {
-        pivot = v[middleIndex];
-    } else {
-        pivot = v[r];
-    } */
+    if((v[l].value <= v[m].value && v[l].value >= v[r].value) || (v[l].value <= v[r].value && v[l].value >= v[m].value)) {
+        if(v[l].value == v[r].value && v[r].value == v[m].value) {
+            if((v[l].cod < v[m].cod && v[l].cod > v[r].cod) || (v[l].cod < v[r].cod && v[l].cod > v[m].cod)) {
+                exch(&v[l], &v[r]);
+            } else if ((v[m].cod < v[l].cod && v[m].cod > v[r].cod) || (v[m].cod < v[r].cod && v[m].cod > v[l].cod)) {
+                exch(&v[m], &v[r]);
+            }
+        } else {
+            exch(&v[l], &v[r]);
+        }
+    } else if((v[m].value < v[l].value && v[m].value > v[r].value) || (v[m].value < v[r].value && v[m].value > v[l].value)) {
+        exch(&v[m], &v[r]);
+    }
+    Item pivot = v[r];
 
 	int i = l, x;
 
@@ -56,7 +62,10 @@ int partition(Item *v, int l, int r) {
 		if(v[x].value < pivot.value) {
 			exch(&v[i], &v[x]);
 			i++;
-		}
+		} else if(v[x].value == pivot.value && v[x].cod < pivot.cod) {
+            exch(&v[i], &v[x]);
+			i++;
+        }
 	}
 
     exch(&v[i], &v[r]);
@@ -77,10 +86,7 @@ int quickSelect(Item *v, int l, int r, int k) {
 }
 
 void getNSmallest(Item *v, int l, int r, int n) {
-    int i;
-    for(i=l; i<n; i++) {
-        quickSelect(v, i, r, 1);
-    }
+    quickSelect(v, 0, r, n);
 }
 
 void exch(Item *x, Item *y) {
