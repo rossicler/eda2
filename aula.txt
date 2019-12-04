@@ -1,0 +1,10 @@
+node *RBinsert(node *h, Item item, int sw) {
+	Key v = Key(item);
+	if(h == NULL) return NEW(item);
+	if (hl->red && hr->red) {
+		h->r=1; hl->red=0; hr->red=0;
+	}
+	if(less(v, Key(h->item))) {
+	
+	}
+}

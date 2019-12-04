@@ -1,0 +1,51 @@
+typedef struct Graph {
+	int V, E;
+	int adj[v][v]; // just the idea, OR
+	// list adj[v];
+}
+
+// Premissas globais:   pre[v] = { -1 }
+			cnt=0;
+void dfsR(Graph G, Edge e) { // O(V²)
+	int t, v = e.w;
+	pre[v] = cnt++;
+	for(t=0; t<G->V; t++){
+		if(G->adj[v][t] != 0) {
+			if(pre[t] == -1)
+				dfsR(G, EDGE(v, t));
+		}
+	}
+}
+
+OU 
+
+void dfsR(Graph G, Edge e) { // O(V+E)
+	int t, v = e.w;
+	pre[v] = cnt++;
+	for(t=G->adj[v]; t != NULL; t = t->next){
+		if(pre[t] == -1)
+			dfsR(G, EDGE(v, t));
+	}
+}
+
+stack p
+p.push(e)
+while(!p.empty()) {
+	v = p.pop().w;
+	pre[v]=cnt++;
+	for ...
+	p.push(EDGE(v, x))
+}
+
+Para a busca em largura, converter stack para queue
+
+void GraphSearch(Graph G) {
+	int t;
+	for(t=0; t<G->V; t++) pre[v] = -1;
+	cnt=0;
+	for(t=0; t<G->V;t++) {
+		if (pre[t] == -1) {
+			dfsR(G, EDGE(t, t));
+		}
+	}
+}
