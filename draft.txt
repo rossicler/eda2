@@ -1,0 +1,35 @@
+B) para remover, pegar o prox do anterior de ptr1 e apontar para o prox do ptr2,
+    pegar o anterior do proximo de ptr2 e apontar para o anterior de ptr1, guardando
+    o ptr1 para imprimir o removido, que é ptr1 até ptr2.
+C) Imagem no celular
+D) Quando ler um email, remover os char '.' e tudo após o '+' até o '@', após isso é necessário
+    verificar se o email já está cadastrado, se não, cadastrar e incrementar o contador, no final
+    é só imprimir o contador.
+E) Função encontra e coloca, na função separa precisa usar a mediana de 3 (verificando a nota da semente, se for igual,
+    verificar o cod da semente), no final é necessário ordenar (usar mergeSort) as k melhores sementes pelo cod e imprimir
+    int eec(int k, Item *v, int l, int r) {
+        int j = separa(v, l, r); // tem que implementar a melhor versão do separa (mediana de 3)
+        if(j == k) return 1;
+        if(j<k) return eec(k, v, j+1, r)
+        else return eec(k, v, l, j-1)
+    }
+F - Hash it!:
+    vetor de 101 posições
+    Se já tiver ocupado, aplicar novamente com o cálculo da foto, caso ainda esteja, aplicar dnv com j+1, se j>19, descarta
+    Na deleção, é necessário verificar se a posição encontrada é a correta, se n, utilizar o j até achar, e na hr de usar ADD
+    é necessário verificar se já está adicionado com até j<=19
+G - Tree:
+    Ler a entrada e inserir na arvore usando a rotação e imprimir in-order (a raiz é imprimida com *x)
+    while(scanf("%d", &n) == 1) {
+        h = insere(h, n);
+        printInOrder(h);
+    }
+    marcar na struct qual é a raiz, usando um root = true or false
+H - Guardando Strings:
+    malloc de 2^22 + 10^5, usnado essa string pra armazenar todas as outras string, marcando onde começa cada uma das string
+
+
+Hash :
+    scanf(" %s", cmd);
+    if(cmd == query)
+        while(scanf(" %s%c", querybuff, &x) == 2 && x != '\n')
